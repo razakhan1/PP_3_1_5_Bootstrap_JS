@@ -8,14 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @PersistenceContext
-    private EntityManager em;
+
     private UserRepository userRepository;
     private PasswordEncoder bCryptPasswordEncoder;
 
@@ -36,7 +34,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Transactional
     @Override
     public void create(User user) {
@@ -52,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void update(User user) {
-        if (user.getPassword().isEmpty()){
+        if (user.getPassword().isEmpty()) {
             user.setPassword(userRepository.findByUsername(user.getUsername()).getPassword());
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

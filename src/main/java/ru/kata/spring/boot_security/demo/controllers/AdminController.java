@@ -31,7 +31,7 @@ public class AdminController {
     }
 
     @PatchMapping("/{id}")
-    public String newEdit(Model model,@ModelAttribute("user") User user, @PathVariable("id") long id) {
+    public String newEdit(Model model, @ModelAttribute("user") User user, @PathVariable("id") long id) {
         model.addAttribute("user", userService.read(id));
         model.addAttribute("rolesAtt", roleService.listRole());
         userService.update(user);

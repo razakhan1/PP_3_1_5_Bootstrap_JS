@@ -37,7 +37,7 @@ public class UserRepositoryTest {
         user.setFirstName("Razakhan");
         user.setLastName("Kazanbekov");
         user.setEmail("qqq@qqq.qq");
-        user.setRoles(list);
+//        user.setRoles(list);
 
         User saveUser = userRepo.save(user);
 
