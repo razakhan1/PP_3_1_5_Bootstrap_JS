@@ -35,6 +35,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+
+
     @Transactional
     @Override
     public void create(User user) {
@@ -50,7 +52,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void update(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (user.getPassword().isEmpty()){
+            user.setPassword(userRepository.findByUsername(user.getUsername()).getPassword());
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
     }
 
