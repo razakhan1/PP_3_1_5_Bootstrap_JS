@@ -13,7 +13,9 @@ import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,7 +29,7 @@ public class UserRepositoryTest {
     @Test
     public void testAddRoleAndNewUser(){
         Role roleUser = roleRepo.getById(2L);
-        List<Role> list = new ArrayList<>();
+        Set<Role> list = new HashSet<>();
         list.add(roleUser);
 
         User user = new User();
@@ -37,7 +39,7 @@ public class UserRepositoryTest {
         user.setFirstName("Razakhan");
         user.setLastName("Kazanbekov");
         user.setEmail("qqq@qqq.qq");
-//        user.setRoles(list);
+        user.setRoles(list);
 
         User saveUser = userRepo.save(user);
 

@@ -1,52 +1,54 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
-import java.security.Principal;
+import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
+
     private final UserService userService;
-    private final RoleService roleService;
 
-    public AdminController(UserService userService,
-                           RoleService roleService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
     }
 
-    @GetMapping()
-    public String viewUsers(Model model, Principal principal) {
-        model.addAttribute("usersList", userService.listUser());
-        model.addAttribute("rolesAtt", roleService.listRole());
-        model.addAttribute("newUser", new User());
-        model.addAttribute("admin", userService.loadUserByUsername(principal.getName()));
-        return "adminPanel";
+    @GetMapping("/table")
+    public ResponseEntity<List<User>> viewUsers() {
+        return new ResponseEntity<>(userService.listUser(), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public String newEdit(Model model, @ModelAttribute("user") User user, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.read(id));
-        model.addAttribute("rolesAtt", roleService.listRole());
+    @PatchMapping("/{id}/edit")
+    public ResponseEntity<HttpStatus> newEdit(@RequestBody User user) {
         userService.update(user);
-        return "redirect:/admin";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/delete")
-    public String newDelete(@PathVariable("id") long id) {
+    public ResponseEntity<HttpStatus> newDelete(@PathVariable("id") long id) {
         userService.delete(id);
-        return "redirect:/admin";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public String newNewUser(@ModelAttribute("user") User user) {
+    public ResponseEntity<HttpStatus> newUser(@RequestBody User user) {
         userService.create(user);
-        return "redirect:/admin";
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> showUser(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(userService.read(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/auth")
+    public ResponseEntity<User> getApiAuthUser(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
